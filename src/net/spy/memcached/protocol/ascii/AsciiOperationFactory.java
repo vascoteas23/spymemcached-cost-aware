@@ -129,8 +129,8 @@ public class AsciiOperationFactory extends BaseOperationFactory {
   }
 
   public StoreOperation store(StoreType storeType, String key, int cost, int flags,
-      int exp, byte[] data, StoreOperation.Callback cb) {
-    return new StoreOperationImpl(storeType, key, cost, flags, exp, data, cb);
+      int exp, byte[] data, StoreOperation.Callback cb, StringBuilder filewriter) {
+    return new StoreOperationImpl(storeType, key, cost, flags, exp, data, cb, filewriter);
   }
 
   public TouchOperation touch(String key, int expiration,

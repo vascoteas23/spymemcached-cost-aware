@@ -237,7 +237,7 @@ public interface OperationFactory {
    * @return the new store operation
    */
   StoreOperation store(StoreType storeType, String key, int cost, int flags, int exp,
-      byte[] data, StoreOperation.Callback cb);
+      byte[] data, StoreOperation.Callback cb, StringBuilder filewriter);
 
   /**
    * Resets a keys expiration time.

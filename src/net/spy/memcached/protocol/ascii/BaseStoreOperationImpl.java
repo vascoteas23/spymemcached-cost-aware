@@ -46,9 +46,10 @@ abstract class BaseStoreOperationImpl extends OperationImpl {
   protected final int flags;
   protected final int exp;
   protected final byte[] data;
+  protected StringBuilder filewriter;
 
   public BaseStoreOperationImpl(String t, String k, int c, int f, int e, byte[] d,
-      OperationCallback cb) {
+      OperationCallback cb, StringBuilder filewriter) {
     super(cb);
     type = t;
     key = k;
@@ -56,14 +57,18 @@ abstract class BaseStoreOperationImpl extends OperationImpl {
     flags = f;
     exp = e;
     data = d;
+    this.filewriter = filewriter;
   }
 
   @Override
   public void handleLine(String line) {
     assert getState() == OperationState.READING : "Read ``" + line
         + "'' when in " + getState() + " state";
+    filewriter.append(" ");
+    filewriter.append((line.equals("STORED") ? line : "NOT STORED") + "\n");
     getCallback().receivedStatus(matchStatus(line, STORED));
     transitionState(OperationState.COMPLETE);
+    
   }
 
   @Override

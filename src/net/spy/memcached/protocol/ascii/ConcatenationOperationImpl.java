@@ -36,7 +36,7 @@ public class ConcatenationOperationImpl extends BaseStoreOperationImpl
 
   public ConcatenationOperationImpl(ConcatenationType t, String k, int c, byte[] d,
       OperationCallback cb) {
-    super(t.name(), k, c, 0, 0, d, cb);
+    super(t.name(), k, c, 0, 0, d, cb, new StringBuilder());
     concatType = t;
   }
 

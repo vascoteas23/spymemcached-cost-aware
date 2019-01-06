@@ -35,8 +35,8 @@ final class StoreOperationImpl extends BaseStoreOperationImpl implements
   private final StoreType storeType;
 
   public StoreOperationImpl(StoreType t, String k, int c, int f, int e, byte[] d,
-      OperationCallback cb) {
-    super(t.name(), k, c, f, e, d, cb);
+      OperationCallback cb, StringBuilder filewriter) {
+    super(t.name(), k, c, f, e, d, cb, filewriter);
     storeType = t;
   }
 

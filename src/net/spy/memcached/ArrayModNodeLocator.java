@@ -83,6 +83,7 @@ public final class ArrayModNodeLocator implements NodeLocator {
   }
 
   private int getServerForKey(String key) {
+	  System.out.println("AQUI");
     int rv = (int) (hashAlg.hash(key) % nodes.length);
     assert rv >= 0 : "Returned negative key for key " + key;
     assert rv < nodes.length : "Invalid server number " + rv + " for key "

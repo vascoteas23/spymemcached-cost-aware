@@ -84,7 +84,7 @@ public abstract class BaseOperationFactory implements OperationFactory {
       StoreOperation so = (StoreOperation) op;
       rv.add(store(so.getStoreType(), first(op.getKeys()),so.getCost(), so.getFlags(),
           so.getExpiration(), so.getData(),
-          (StoreOperation.Callback) op.getCallback()));
+          (StoreOperation.Callback) op.getCallback(), new StringBuilder()));
     } else if (op instanceof ConcatenationOperation) {
       ConcatenationOperation c = (ConcatenationOperation) op;
       rv.add(cat(c.getStoreType(), c.getCasValue(), first(op.getKeys()), ((ConcatenationOperation) op).getCost(),

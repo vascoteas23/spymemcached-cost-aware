@@ -300,7 +300,7 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
   }
 
   private <T> OperationFuture<Boolean> asyncStore(StoreType storeType,
-      String key, int cost, int exp, T value, Transcoder<T> tc) {
+      String key, int cost, int exp, T value, Transcoder<T> tc, StringBuilder filewriter) {
     CachedData co = tc.encode(value);
     final CountDownLatch latch = new CountDownLatch(1);
     final OperationFuture<Boolean> rv =
@@ -322,15 +322,15 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
               latch.countDown();
               rv.signalComplete();
             }
-          });
+          }, filewriter);
     rv.setOperation(op);
     mconn.enqueueOperation(key, op);
     return rv;
   }
 
   private OperationFuture<Boolean> asyncStore(StoreType storeType, String key, int cost,
-      int exp, Object value) {
-    return asyncStore(storeType, key, cost, exp, value, transcoder);
+      int exp, Object value, StringBuilder filewriter) {
+    return asyncStore(storeType, key, cost, exp, value, transcoder,filewriter);
   }
 
   private <T> OperationFuture<Boolean> asyncCat(ConcatenationType catType,
@@ -815,7 +815,7 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
   @Override
   public <T> OperationFuture<Boolean> add(String key, int cost, int exp, T o,
       Transcoder<T> tc) {
-    return asyncStore(StoreType.add, key,cost, exp, o, tc);
+    return asyncStore(StoreType.add, key,cost, exp, o, tc, new StringBuilder());
   }
 
   /**
@@ -850,8 +850,8 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
    *           full to accept any more requests
    */
   @Override
-  public OperationFuture<Boolean> add(String key, int cost, int exp, Object o) {
-    return asyncStore(StoreType.add, key, cost, exp, o, transcoder);
+  public OperationFuture<Boolean> add(String key, int cost, int exp, Object o, StringBuilder filewriter) {
+    return asyncStore(StoreType.add, key, cost, exp, o, transcoder, filewriter);
   }
 
   /**
@@ -889,7 +889,7 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
   @Override
   public <T> OperationFuture<Boolean> set(String key, int cost, int exp, T o,
       Transcoder<T> tc) {
-    return asyncStore(StoreType.set, key, cost, exp, o, tc);
+    return asyncStore(StoreType.set, key, cost, exp, o, tc, new StringBuilder());
   }
 
   /**
@@ -924,8 +924,8 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
    *           full to accept any more requests
    */
   @Override
-  public OperationFuture<Boolean> set(String key, int cost, int exp, Object o) {
-    return asyncStore(StoreType.set, key, cost, exp, o, transcoder);
+  public OperationFuture<Boolean> set(String key, int cost, int exp, Object o, StringBuilder filewriter) {
+    return asyncStore(StoreType.set, key, cost, exp, o, transcoder, filewriter);
   }
 
   /**
@@ -964,7 +964,7 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
   @Override
   public <T> OperationFuture<Boolean> replace(String key, int cost, int exp, T o,
       Transcoder<T> tc) {
-    return asyncStore(StoreType.replace, key, cost, exp, o, tc);
+    return asyncStore(StoreType.replace, key, cost, exp, o, tc, new StringBuilder());
   }
 
   /**
@@ -999,8 +999,8 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
    *           full to accept any more requests
    */
   @Override
-  public OperationFuture<Boolean> replace(String key,int cost, int exp, Object o) {
-    return asyncStore(StoreType.replace, key, cost, exp, o, transcoder);
+  public OperationFuture<Boolean> replace(String key,int cost, int exp, Object o, StringBuilder filewriter) {
+    return asyncStore(StoreType.replace, key, cost, exp, o, transcoder,filewriter);
   }
 
   /**
@@ -1957,7 +1957,7 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
     // manually here.
     if (rv == -1) {
       Future<Boolean> f = asyncStore(StoreType.add, key,0, exp,
-          String.valueOf(def));
+          String.valueOf(def), new StringBuilder());
       try {
         if (f.get(operationTimeout, TimeUnit.MILLISECONDS)) {
           rv = def;

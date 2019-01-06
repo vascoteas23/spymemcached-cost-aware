@@ -110,7 +110,6 @@ abstract class OperationImpl extends BaseOperationImpl implements Operation {
   }
 
   OperationErrorType classifyError(String line) {
-//	  System.out.println(line);
     OperationErrorType rv = null;
     if (line.startsWith("ERROR")) {
       rv = OperationErrorType.GENERAL;

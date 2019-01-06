@@ -86,6 +86,7 @@ class KetamaIterator extends SpyObject implements Iterator<MemcachedNode> {
   }
 
   private MemcachedNode getNodeForKey(long hash) {
+	  System.out.println("KETAMA");
     final MemcachedNode rv;
     if (!ketamaNodes.containsKey(hash)) {
       // Java 1.6 adds a ceilingKey method, but I'm still stuck in 1.5

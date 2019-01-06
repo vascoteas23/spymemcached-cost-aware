@@ -137,7 +137,7 @@ public class BinaryOperationFactory extends BaseOperationFactory {
   }
 
   public StoreOperation store(StoreType storeType, String key, int cost, int flags,
-      int exp, byte[] data, StoreOperation.Callback cb) {
+      int exp, byte[] data, StoreOperation.Callback cb, StringBuilder filewriter) {
     return new StoreOperationImpl(storeType, key, cost, flags, exp, data, 0, cb);
   }
 
