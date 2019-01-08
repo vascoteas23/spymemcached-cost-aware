@@ -39,5 +39,6 @@ public interface GetOperation extends KeyedOperation {
      * @param data the data stored under this key
      */
     void gotData(String key, int flags, byte[] data);
+    
   }
 }

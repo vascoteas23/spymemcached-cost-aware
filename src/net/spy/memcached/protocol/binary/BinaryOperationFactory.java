@@ -62,6 +62,7 @@ import net.spy.memcached.tapmessage.TapOpcode;
 import javax.security.auth.callback.CallbackHandler;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -229,6 +230,32 @@ public class BinaryOperationFactory extends BaseOperationFactory {
 @Override
 public ConcatenationOperation cat(ConcatenationType catType, long casId, String key, int cost, byte[] data,
 		OperationCallback cb) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public GetOperation get(String key, HashMap<String, Integer> lambda, Callback callback) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public StoreOperation store(StoreType storeType, String key, HashMap<String, Integer> lambda, int i, int flags, int exp,
+		byte[] data, net.spy.memcached.ops.StoreOperation.Callback cb, StringBuffer stringBuffer) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public GetlOperation getl(String key, HashMap<String, Integer> lambda, int exp,
+		net.spy.memcached.ops.GetlOperation.Callback callback) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public GetOperation get(Collection<String> keys, HashMap<String, Integer> lambda, Callback cb) {
 	// TODO Auto-generated method stub
 	return null;
 }

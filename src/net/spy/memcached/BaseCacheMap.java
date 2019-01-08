@@ -115,7 +115,7 @@ public class BaseCacheMap<V> implements Map<String, V> {
 
   public void putAll(Map<? extends String, ? extends V> t) {
     for (Map.Entry<? extends String, ? extends V> me : t.entrySet()) {
-      client.set(getKey(me.getKey()), 0, exp, me.getValue(), new StringBuilder());
+      client.set(getKey(me.getKey()), 0, exp, me.getValue(), new StringBuffer());
     }
   }
 
@@ -140,7 +140,7 @@ public class BaseCacheMap<V> implements Map<String, V> {
 
   public V put(String key, V value) {
     V rv = get(key);
-    client.set(getKey(key), 0,  exp, value, new StringBuilder());
+    client.set(getKey(key), 0,  exp, value, new StringBuffer());
     return rv;
   }
 }

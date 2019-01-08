@@ -34,6 +34,6 @@ class GetsOperationImpl extends BaseGetOpImpl implements GetsOperation {
   private static final String CMD = "gets";
 
   public GetsOperationImpl(String key, GetsOperation.Callback cb) {
-    super(CMD, cb, Collections.singleton(key));
+    super(CMD, null,cb, Collections.singleton(key));
   }
 }

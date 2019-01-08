@@ -111,7 +111,7 @@ public class CacheLoader extends SpyObject {
     Future<Boolean> rv = null;
     while (rv == null) {
       try {
-        rv = client.set(k, 0, expiration, value, new StringBuilder());
+        rv = client.set(k, 0, expiration, value, new StringBuffer());
       } catch (IllegalStateException ex) {
         // Need to slow down a bit when we start getting rejections.
         try {

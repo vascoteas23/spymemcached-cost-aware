@@ -23,6 +23,9 @@
 
 package net.spy.memcached.protocol.binary;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.spy.memcached.ops.CASOperation;
 import net.spy.memcached.ops.StoreOperation;
 import net.spy.memcached.ops.StoreType;
@@ -119,5 +122,11 @@ class StoreOperationImpl extends SingleKeyOperationImpl implements
     return super.toString() + " Cas: " + cas + " Exp: " + exp + " Flags: "
       + flags + " Data Length: " + data.length;
   }
+
+@Override
+public HashMap<String, Integer> gethashmap() {
+	
+	return null;
+}
 
 }

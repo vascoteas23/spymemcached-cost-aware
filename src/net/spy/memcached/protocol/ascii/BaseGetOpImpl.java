@@ -26,6 +26,8 @@ package net.spy.memcached.protocol.ascii;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.spy.memcached.KeyUtil;
 import net.spy.memcached.ops.GetAndTouchOperation;
@@ -61,21 +63,24 @@ public abstract class BaseGetOpImpl extends OperationImpl {
   private int readOffset = 0;
   private byte lookingFor = '\0';
   private boolean hasValue;
+  private HashMap<String, Integer> lambda;
 
-  public BaseGetOpImpl(String c, OperationCallback cb, Collection<String> k) {
+  public BaseGetOpImpl(String c,HashMap<String,Integer> lambda ,OperationCallback cb, Collection<String> k) {
     super(cb);
     cmd = c;
     keys = k;
     exp = 0;
+    this.lambda = lambda;
     expBytes = null;
     hasValue = false;
   }
 
-  public BaseGetOpImpl(String c, int e, OperationCallback cb, String k) {
+  public BaseGetOpImpl(String c, HashMap<String,Integer> lambda, int e, OperationCallback cb, String k) {
     super(cb);
     cmd = c;
     keys = Collections.singleton(k);
     exp = e;
+    this.lambda = lambda;
     expBytes = String.valueOf(e).getBytes();
     hasValue = false;
   }
@@ -89,6 +94,10 @@ public abstract class BaseGetOpImpl extends OperationImpl {
 
   @Override
   public final void handleLine(String line) {
+	  int lmb = Integer.parseInt(line.substring(line.length() - 1, line.length()));
+		line = line.substring(0, line.length() - 1);
+		System.out.println("read" + line + lmb);
+		lambda.put(keys.toString(), lmb);
     if (line.equals("END")) {
       getLogger().debug("Get complete!");
       if (hasValue) {

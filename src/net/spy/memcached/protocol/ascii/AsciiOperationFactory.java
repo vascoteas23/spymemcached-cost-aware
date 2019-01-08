@@ -60,6 +60,7 @@ import net.spy.memcached.tapmessage.TapOpcode;
 import javax.security.auth.callback.CallbackHandler;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -87,16 +88,16 @@ public class AsciiOperationFactory extends BaseOperationFactory {
         + "for ASCII protocol");
   }
 
-  public GetOperation get(String key, GetOperation.Callback cb) {
-    return new GetOperationImpl(key, cb);
+  public GetOperation get(String key, HashMap<String,Integer> lambda, GetOperation.Callback cb) {
+    return new GetOperationImpl(key, lambda,cb);
   }
 
-  public GetOperation get(Collection<String> keys, GetOperation.Callback cb) {
-    return new GetOperationImpl(keys, cb);
+  public GetOperation get(Collection<String> keys,HashMap<String,Integer> lambda,GetOperation.Callback cb) {
+    return new GetOperationImpl(keys, lambda,cb);
   }
 
-  public GetlOperation getl(String key, int exp, GetlOperation.Callback cb) {
-    return new GetlOperationImpl(key, exp, cb);
+  public GetlOperation getl(String key, HashMap<String,Integer> lambda,int exp, GetlOperation.Callback cb) {
+    return new GetlOperationImpl(key,lambda,exp, cb);
   }
 
   public ObserveOperation observe(String key, long casId, int index,
@@ -128,9 +129,9 @@ public class AsciiOperationFactory extends BaseOperationFactory {
     return new StatsOperationImpl(arg, cb);
   }
 
-  public StoreOperation store(StoreType storeType, String key, int cost, int flags,
-      int exp, byte[] data, StoreOperation.Callback cb, StringBuilder filewriter) {
-    return new StoreOperationImpl(storeType, key, cost, flags, exp, data, cb, filewriter);
+  public StoreOperation store(StoreType storeType, String key, HashMap<String,Integer> lambda, int cost, int flags,
+      int exp, byte[] data, StoreOperation.Callback cb, StringBuffer filewriter) {
+    return new StoreOperationImpl(storeType, key, lambda,cost, flags, exp, data, cb, filewriter);
   }
 
   public TouchOperation touch(String key, int expiration,
@@ -162,7 +163,7 @@ public class AsciiOperationFactory extends BaseOperationFactory {
     GetOperation.Callback callback =
         new MultiGetOperationCallback(op.getCallback(), op.getKeys().size());
     for (String k : op.getKeys()) {
-      rv.add(get(k, callback));
+      rv.add(get(k, null, callback));
     }
     return rv;
   }
@@ -224,6 +225,8 @@ public class AsciiOperationFactory extends BaseOperationFactory {
     throw new UnsupportedOperationException("Replica gets is not supported "
       + "for ASCII protocol");
   }
+
+
 
 
 }

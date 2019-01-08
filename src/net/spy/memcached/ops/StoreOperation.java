@@ -23,6 +23,9 @@
 
 package net.spy.memcached.ops;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Operation that represents object storage.
  */
@@ -70,4 +73,5 @@ public interface StoreOperation extends KeyedOperation {
      */
     void gotData(String key, long cas);
   }
+  HashMap<String, Integer> gethashmap();
 }

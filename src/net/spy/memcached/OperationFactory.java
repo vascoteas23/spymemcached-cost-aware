@@ -30,6 +30,7 @@ import net.spy.memcached.ops.DeleteOperation;
 import net.spy.memcached.ops.FlushOperation;
 import net.spy.memcached.ops.GetAndTouchOperation;
 import net.spy.memcached.ops.GetOperation;
+import net.spy.memcached.ops.GetOperation.Callback;
 import net.spy.memcached.ops.GetlOperation;
 import net.spy.memcached.ops.GetsOperation;
 import net.spy.memcached.ops.KeyedOperation;
@@ -56,6 +57,7 @@ import net.spy.memcached.tapmessage.TapOpcode;
 
 import javax.security.auth.callback.CallbackHandler;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -141,7 +143,7 @@ public interface OperationFactory {
    * @param callback the callback that will contain the results
    * @return a new GetOperation
    */
-  GetOperation get(String key, GetOperation.Callback callback);
+  GetOperation get(String key, HashMap<String,Integer> lambda, GetOperation.Callback callback);
 
   /**
    * Create a replica get operation.
@@ -173,7 +175,7 @@ public interface OperationFactory {
    * @param callback the callback that will contain the results
    * @return a new GetOperation
    */
-  GetlOperation getl(String key, int exp, GetlOperation.Callback callback);
+  GetlOperation getl(String key,HashMap<String,Integer> lambda, int exp, GetlOperation.Callback callback);
 
   /**
    * Create a gets operation.
@@ -191,7 +193,7 @@ public interface OperationFactory {
    * @param cb the callback that will contain the results
    * @return a new GetOperation
    */
-  GetOperation get(Collection<String> keys, GetOperation.Callback cb);
+  GetOperation get(Collection<String> keys, HashMap<String,Integer> lambda,GetOperation.Callback cb);
 
   /**
    * Get a new KeyStatsOperation.
@@ -236,8 +238,8 @@ public interface OperationFactory {
    * @param cb the status callback
    * @return the new store operation
    */
-  StoreOperation store(StoreType storeType, String key, int cost, int flags, int exp,
-      byte[] data, StoreOperation.Callback cb, StringBuilder filewriter);
+  StoreOperation store(StoreType storeType, String key, HashMap<String, Integer> lambda, int i, int flags, int exp,
+      byte[] data, StoreOperation.Callback cb, StringBuffer stringBuffer);
 
   /**
    * Resets a keys expiration time.
@@ -387,4 +389,5 @@ public interface OperationFactory {
    * @return a tap dump operation.
    */
   TapOperation tapDump(String id, OperationCallback cb);
+
 }

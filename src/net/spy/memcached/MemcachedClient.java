@@ -158,6 +158,8 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
   protected final AuthThreadMonitor authMonitor = new AuthThreadMonitor();
 
   protected final ExecutorService executorService;
+  
+  protected HashMap<String, Integer> lambda = new HashMap<>();
 
   /**
    * Get a memcache client operating on the specified memcached locations.
@@ -300,13 +302,13 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
   }
 
   private <T> OperationFuture<Boolean> asyncStore(StoreType storeType,
-      String key, int cost, int exp, T value, Transcoder<T> tc, StringBuilder filewriter) {
+      String key, int cost, int exp, T value, Transcoder<T> tc, StringBuffer filewriter) {
     CachedData co = tc.encode(value);
     final CountDownLatch latch = new CountDownLatch(1);
     final OperationFuture<Boolean> rv =
       new OperationFuture<Boolean>(key, latch, operationTimeout,
       executorService);
-    Operation op = opFact.store(storeType, key, cost, co.getFlags(), exp,
+    Operation op = opFact.store(storeType, key, lambda, cost, co.getFlags(), exp,
         co.getData(), new StoreOperation.Callback() {
             @Override
             public void receivedStatus(OperationStatus val) {
@@ -329,7 +331,7 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
   }
 
   private OperationFuture<Boolean> asyncStore(StoreType storeType, String key, int cost,
-      int exp, Object value, StringBuilder filewriter) {
+      int exp, Object value, StringBuffer filewriter) {
     return asyncStore(storeType, key, cost, exp, value, transcoder,filewriter);
   }
 
@@ -815,7 +817,7 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
   @Override
   public <T> OperationFuture<Boolean> add(String key, int cost, int exp, T o,
       Transcoder<T> tc) {
-    return asyncStore(StoreType.add, key,cost, exp, o, tc, new StringBuilder());
+    return asyncStore(StoreType.add, key,cost, exp, o, tc, new StringBuffer());
   }
 
   /**
@@ -850,7 +852,7 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
    *           full to accept any more requests
    */
   @Override
-  public OperationFuture<Boolean> add(String key, int cost, int exp, Object o, StringBuilder filewriter) {
+  public OperationFuture<Boolean> add(String key, int cost, int exp, Object o, StringBuffer filewriter) {
     return asyncStore(StoreType.add, key, cost, exp, o, transcoder, filewriter);
   }
 
@@ -889,7 +891,7 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
   @Override
   public <T> OperationFuture<Boolean> set(String key, int cost, int exp, T o,
       Transcoder<T> tc) {
-    return asyncStore(StoreType.set, key, cost, exp, o, tc, new StringBuilder());
+    return asyncStore(StoreType.set, key, cost, exp, o, tc, new StringBuffer());
   }
 
   /**
@@ -924,7 +926,7 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
    *           full to accept any more requests
    */
   @Override
-  public OperationFuture<Boolean> set(String key, int cost, int exp, Object o, StringBuilder filewriter) {
+  public OperationFuture<Boolean> set(String key, int cost, int exp, Object o, StringBuffer filewriter) {
     return asyncStore(StoreType.set, key, cost, exp, o, transcoder, filewriter);
   }
 
@@ -964,7 +966,7 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
   @Override
   public <T> OperationFuture<Boolean> replace(String key, int cost, int exp, T o,
       Transcoder<T> tc) {
-    return asyncStore(StoreType.replace, key, cost, exp, o, tc, new StringBuilder());
+    return asyncStore(StoreType.replace, key, cost, exp, o, tc, new StringBuffer());
   }
 
   /**
@@ -999,7 +1001,7 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
    *           full to accept any more requests
    */
   @Override
-  public OperationFuture<Boolean> replace(String key,int cost, int exp, Object o, StringBuilder filewriter) {
+  public OperationFuture<Boolean> replace(String key,int cost, int exp, Object o, StringBuffer filewriter) {
     return asyncStore(StoreType.replace, key, cost, exp, o, transcoder,filewriter);
   }
 
@@ -1015,11 +1017,10 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
    */
   @Override
   public <T> GetFuture<T> asyncGet(final String key, final Transcoder<T> tc) {
-
     final CountDownLatch latch = new CountDownLatch(1);
     final GetFuture<T> rv = new GetFuture<T>(latch, operationTimeout, key,
       executorService);
-    Operation op = opFact.get(key, new GetOperation.Callback() {
+    Operation op = opFact.get(key,lambda, new GetOperation.Callback() {
       private Future<T> val;
 
       @Override
@@ -1353,7 +1354,7 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
         new HashMap<MemcachedNode, Operation>();
 
     for (Map.Entry<MemcachedNode, Collection<String>> me : chunks.entrySet()) {
-      Operation op = opFact.get(me.getValue(), cb);
+      Operation op = opFact.get(me.getValue(), lambda, cb);
       mops.put(me.getKey(), op);
       ops.add(op);
     }
@@ -1957,7 +1958,7 @@ public class MemcachedClient extends SpyObject implements MemcachedClientIF,
     // manually here.
     if (rv == -1) {
       Future<Boolean> f = asyncStore(StoreType.add, key,0, exp,
-          String.valueOf(def), new StringBuilder());
+          String.valueOf(def), new StringBuffer());
       try {
         if (f.get(operationTimeout, TimeUnit.MILLISECONDS)) {
           rv = def;

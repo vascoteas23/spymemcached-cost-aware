@@ -91,15 +91,15 @@ public interface MemcachedClientIF {
 
   <T> Future<Boolean> add(String key, int cost, int exp, T o, Transcoder<T> tc);
 
-  Future<Boolean> add(String key, int cost, int exp, Object o, StringBuilder filewriter);
+  Future<Boolean> add(String key, int cost, int exp, Object o, StringBuffer filewriter);
 
   <T> Future<Boolean> set(String key, int cost, int exp, T o, Transcoder<T> tc);
 
-  Future<Boolean> set(String key, int cost, int exp, Object o, StringBuilder filewriter);
+  Future<Boolean> set(String key, int cost, int exp, Object o, StringBuffer filewriter);
 
   <T> Future<Boolean> replace(String key,int cost, int exp, T o, Transcoder<T> tc);
 
-  Future<Boolean> replace(String key,int cost, int exp, Object o, StringBuilder filewriter);
+  Future<Boolean> replace(String key,int cost, int exp, Object o, StringBuffer filewriter);
 
   <T> Future<T> asyncGet(String key, Transcoder<T> tc);
 

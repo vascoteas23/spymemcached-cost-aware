@@ -82,9 +82,9 @@ public abstract class BaseOperationFactory implements OperationFactory {
           mo.getDefault(), mo.getExpiration(), op.getCallback()));
     } else if (op instanceof StoreOperation) {
       StoreOperation so = (StoreOperation) op;
-      rv.add(store(so.getStoreType(), first(op.getKeys()),so.getCost(), so.getFlags(),
+      rv.add(store(so.getStoreType(), first(op.getKeys()), so.gethashmap(),so.getCost(), so.getFlags(),
           so.getExpiration(), so.getData(),
-          (StoreOperation.Callback) op.getCallback(), new StringBuilder()));
+          (StoreOperation.Callback) op.getCallback(), new StringBuffer()));
     } else if (op instanceof ConcatenationOperation) {
       ConcatenationOperation c = (ConcatenationOperation) op;
       rv.add(cat(c.getStoreType(), c.getCasValue(), first(op.getKeys()), ((ConcatenationOperation) op).getCost(),
@@ -98,7 +98,7 @@ public abstract class BaseOperationFactory implements OperationFactory {
       rv.add(touch(first(tt.getKeys()), tt.getExpiration(), tt.getCallback()));
     } else if (op instanceof GetlOperation) {
       GetlOperation gl = (GetlOperation) op;
-      rv.add(getl(first(gl.getKeys()), gl.getExpiration(),
+      rv.add(getl(first(gl.getKeys()),null ,gl.getExpiration(),
           (GetlOperation.Callback) gl.getCallback()));
     } else if (op instanceof ObserveOperation) {
       ObserveOperation oo = (ObserveOperation) op;

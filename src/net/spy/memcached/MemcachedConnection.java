@@ -1064,7 +1064,7 @@ public class MemcachedConnection extends SpyThread {
 
     if (op instanceof MultiGetOperationImpl) {
       for (String key : ((MultiGetOperationImpl) op).getRetryKeys()) {
-        addOperation(key, opFact.get(key,
+        addOperation(key, opFact.get(key, null,
           (GetOperation.Callback) op.getCallback()));
       }
     } else if (op instanceof KeyedOperation) {
@@ -1216,7 +1216,6 @@ public class MemcachedConnection extends SpyThread {
    */
   protected void addOperation(final String key, final Operation o) {
     MemcachedNode placeIn = null;
-    
     MemcachedNode primary = locator.getPrimary(key);
     System.out.println(primary + "NÓ");
     if (primary.isActive() || failureMode == FailureMode.Retry) {

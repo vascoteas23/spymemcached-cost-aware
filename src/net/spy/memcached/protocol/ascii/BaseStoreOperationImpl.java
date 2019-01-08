@@ -25,6 +25,8 @@ package net.spy.memcached.protocol.ascii;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.spy.memcached.KeyUtil;
 import net.spy.memcached.ops.OperationCallback;
@@ -46,10 +48,11 @@ abstract class BaseStoreOperationImpl extends OperationImpl {
   protected final int flags;
   protected final int exp;
   protected final byte[] data;
-  protected StringBuilder filewriter;
+  protected StringBuffer filewriter;
+  protected HashMap<String,Integer> lambda;
 
-  public BaseStoreOperationImpl(String t, String k, int c, int f, int e, byte[] d,
-      OperationCallback cb, StringBuilder filewriter) {
+  public BaseStoreOperationImpl(String t, String k, HashMap<String,Integer> lambda, int c, int f, int e, byte[] d,
+      OperationCallback cb, StringBuffer filewriter) {
     super(cb);
     type = t;
     key = k;
@@ -57,13 +60,20 @@ abstract class BaseStoreOperationImpl extends OperationImpl {
     flags = f;
     exp = e;
     data = d;
+    this.lambda = lambda;
     this.filewriter = filewriter;
   }
 
   @Override
   public void handleLine(String line) {
+	
+	int lmb = Integer.parseInt(line.substring(line.length() - 1, line.length()));
+	line = line.substring(0, line.length() - 1);
+	System.out.println("insert " + key + " " + line + " " + lmb);
+	lambda.put(key, lmb);
     assert getState() == OperationState.READING : "Read ``" + line
         + "'' when in " + getState() + " state";
+    System.out.println(line);
     filewriter.append(" ");
     filewriter.append((line.equals("STORED") ? line : "NOT STORED") + "\n");
     getCallback().receivedStatus(matchStatus(line, STORED));
@@ -96,6 +106,9 @@ abstract class BaseStoreOperationImpl extends OperationImpl {
   
   public int getCost() {
 	  return cost;
+  }
+  public HashMap<String,Integer> gethashmap(){
+	  return lambda;
   }
 
   public int getFlags() {

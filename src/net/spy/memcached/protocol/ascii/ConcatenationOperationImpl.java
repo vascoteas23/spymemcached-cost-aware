@@ -22,6 +22,8 @@
 
 package net.spy.memcached.protocol.ascii;
 
+import java.util.Map;
+
 import net.spy.memcached.ops.ConcatenationOperation;
 import net.spy.memcached.ops.ConcatenationType;
 import net.spy.memcached.ops.OperationCallback;
@@ -36,7 +38,7 @@ public class ConcatenationOperationImpl extends BaseStoreOperationImpl
 
   public ConcatenationOperationImpl(ConcatenationType t, String k, int c, byte[] d,
       OperationCallback cb) {
-    super(t.name(), k, c, 0, 0, d, cb, new StringBuilder());
+    super(t.name(), k, null ,c, 0, 0, d, cb, new StringBuffer());
     concatType = t;
   }
 
